@@ -21,7 +21,7 @@
 #
 # CDDL HEADER END
 #
-# Copyright (c) 2013, Joyent, Inc. All rights reserved.
+# Copyright 2019 Joyent, Inc.
 #
 #
 # Run the imgadm tests. This is expected to be run from a SmartOS GZ.
@@ -104,13 +104,15 @@ do
 done
 
 
-if [[ $(uname -s) != 'SunOS' ]]; then
-    fatal "this can only run on SmartOS"
-fi
-
-if [[ $(zonename) != 'global' ]]; then
-    fatal "this can only run in the GZ"
-fi
+case $(uname -s) in
+SunOS)
+    if [[ $(zonename) != 'global' ]]; then
+        fatal "this can only run in the GZ"
+    fi
+    ;;
+Linux) : ;;
+*)  fatal "this cannot be run on $(uname -s)"
+esac
 
 if [[ $(id -u) != 0 ]]; then
     fatal "this can only run as root"

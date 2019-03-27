@@ -34,6 +34,8 @@ JSSTYLE_OPTS	= -o indent=4,strict-indent=1,doxygen,unparenthesized-return=0,cont
 
 SUBDIRS		= tools/javascriptlint
 
+export PATH := /usr/node/bin:$(PATH)
+
 all	: TARGET = all
 clean	: TARGET = clean
 install	: TARGET = install
