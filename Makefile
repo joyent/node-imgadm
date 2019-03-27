@@ -20,24 +20,59 @@
 #
 # CDDL HEADER END
 #
-# Copyright (c) 2013, Joyent, Inc. All rights reserved.
+# Copyright 2019 Joyent, Inc.
 #
 #
 # imgadm Makefile
 #
 
 
+TOP		= $(PWD)
+JSLINT		= $(TOP)/tools/javascriptlint/build/install/jsl
+JSSTYLE		= $(TOP)/tools/jsstyle
+JSSTYLE_OPTS	= -o indent=4,strict-indent=1,doxygen,unparenthesized-return=0,continuation-at-front=1,leading-right-paren-ok=1
+
+SUBDIRS		= tools/javascriptlint
+
+all	: TARGET = all
+clean	: TARGET = clean
+install	: TARGET = install
+check	: TARGET = check
+test	: TARGET = test
+
 #
 # Targets
 #
 
+all: $(SUBDIRS)
+
+.PHONY: $(SUBDIRS)
+$(SUBDIRS):
+	cd $@ && $(MAKE) TOP=$(TOP) $(TARGET)
+
+.PHONY: install
+install: $(SUBDIRS)
+	npm install
+
+.PHONY: clean
+clean: $(SUBDIRS)
+	-npm uninstall
+
 .PHONY: test
-test:
+test: $(SUBDIRS)
 	./test/runtests
 
 .PHONY: check
-check:
-	cd ../.. && make check
+check: $(SUBDIRS)
+	@printf "\n==> Running JavaScriptLint...\n"
+	$(JSLINT) --nologo --conf tools/jsl.node.conf lib/*.js
+	@printf "\n==> Running jsstyle...\n"
+	@# jsstyle doesn't echo as it goes so we add an echo to each line below
+	@(for file in lib/*.js; do \
+		echo $(PWD)/$$file; \
+		$(JSSTYLE) $(JSSTYLE_OPTS) $$file || exit 1; \
+	done)
+	@printf "\nJS style ok!\n"
 
 .PHONY: update_modules
 update_modules:
@@ -59,4 +94,4 @@ dev-install-image:
 	mkdir -p $(INSTALLIMAGE)/tools
 	cp -PR tools/coal-create-docker-vm.sh $(INSTALLIMAGE)/tools/
 	mkdir -p $(INSTALLIMAGE)/man
-	node ../../tools/ronnjs/bin/ronn.js man/imgadm.1m.md > $(INSTALLIMAGE)/man/imgadm.1m
+	@echo SKIPPING "node ../../tools/ronnjs/bin/ronn.js man/imgadm.1m.md > $(INSTALLIMAGE)/man/imgadm.1m"
