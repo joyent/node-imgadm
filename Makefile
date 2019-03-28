@@ -41,6 +41,7 @@ clean	: TARGET = clean
 install	: TARGET = install
 check	: TARGET = check
 test	: TARGET = test
+test	: export PATH := $(TOP)/sbin:/usr/node/bin:$(PATH)
 
 #
 # Targets
