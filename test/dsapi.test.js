@@ -65,14 +65,6 @@ test('imgadm sources -d images.jo', function (t) {
         t.end();
     });
 });
-test('imgadm sources -a DSAPI', function (t) {
-    exec('imgadm sources -a https://datasets.joyent.com/datasets -t dsapi',
-            function (err, stdout, stderr) {
-        t.ifError(err, err);
-        t.end();
-    });
-});
-
 
 // OS-2981: we broke 'imgadm avail' with a DSAPI source once.
 test('imgadm avail', function (t) {
