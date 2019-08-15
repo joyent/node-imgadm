@@ -16,7 +16,7 @@
     "findit2": "2.2.3",
     "imgmanifest": "3.1.0",
     "json": "9.0.6",
-    "lockfd": "../node-lockfd",
+    "lockfd": "git://github.com/mgerdts/node-lockfd.git#6e8957e9f636a9ce643bf3ca6f896cf6553886ca",
     "mkdirp": "0.5.0",
     "uuid": "3.3.2",
     "once": "1.3.1",
