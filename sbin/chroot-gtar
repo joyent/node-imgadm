@@ -1,9 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Run `gtar` in a chroot to guard against symlink/hardlink break outs.
 #
 # Limitation: This doesn't guard against multiple concurrent runs in the same
 # or child/parent dirs.
+#
+# Copyright 2019 Joyent, Inc.
 #
 
 if [[ -n "$TRACE" ]]; then
@@ -104,30 +106,45 @@ TO_REMOVE="$TO_REMOVE $ROOTDIR/$(basename $TARBALL)"
 rm -rf $BINDIR
 mkdir $BINDIR
 cp /usr/img/sbin/gtar-unlink-dir $BINDIR/
-CMDS="gtar"
+if [[ $(uname -s) == SunOS ]]; then
+    CMDS="gtar"
+else
+    CMDS="tar"
+fi
 CMDS="$CMDS cat gzip bzip2 xzcat"
 CMDS="$CMDS bash rm grep sed tee"
 for cmd in $CMDS; do
-    cp $(which $cmd) $BINDIR/
+    c=$(which "$cmd")
+    if [[ -z "$c" ]]; then
+        echo "$0: warning $cmd not found"
+        continue
+    fi
+    cp "$c" "$BINDIR/$cmd"
 done
 
 mkdir -p $LIBDIR
-libs="/lib/ld.so.1
-    $(for cmd in $CMDS; do ldd $(which $cmd); done \
-        | awk '{print $3}' | sort | uniq)
-    "
+if [[ $(uname -s) == SunOS ]]; then
+    libs=/lib/ld.so.1
+else
+    libs=
+fi
+libs+="$(for cmd in $CMDS; do ldd $(which $cmd); done \
+        | awk '{print $3}' | sort | uniq)"
 for lib in $libs; do
     cp $lib $LIBDIR/
 done
-cp /usr/img/lib/nomknod.so $LIBDIR/
-mkdir -p $LIBDIR/64/
-cp /usr/img/lib/64/nomknod.so $LIBDIR/64/
+# XXX-mg need to implement this for Linux
+#cp /usr/img/lib/nomknod.so $LIBDIR/
+#mkdir -p $LIBDIR/64/
+#cp /usr/img/lib/64/nomknod.so $LIBDIR/64/
 
-TO_UMOUNT="$TO_UMOUNT $ROOTDIR/dev/fd"
-TO_REMOVE="$TO_REMOVE $ROOTDIR/dev/fd"
-[[ ! -e $ROOTDIR/dev ]] && TO_REMOVE="$TO_REMOVE $ROOTDIR/dev"
-mkdir -p $ROOTDIR/dev/fd
-mount -F fd fd $ROOTDIR/dev/fd
+if [[ $(uname -s) == SunOS ]]; then
+	TO_UMOUNT="$TO_UMOUNT $ROOTDIR/dev/fd"
+	TO_REMOVE="$TO_REMOVE $ROOTDIR/dev/fd"
+	[[ ! -e $ROOTDIR/dev ]] && TO_REMOVE="$TO_REMOVE $ROOTDIR/dev"
+	mkdir -p $ROOTDIR/dev/fd
+	mount -F fd fd $ROOTDIR/dev/fd
+fi
 
 TRACE=$TRACE LC_ALL=C PATH=/$CHROOTBIN:$PATH /usr/sbin/chroot $ROOTDIR \
     /$CHROOTBIN/bash /$CHROOTBIN/gtar-unlink-dir "$SUBDIR" "$(basename "$TARBALL")" "$COMPRESSION" $GTARARGS

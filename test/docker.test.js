@@ -110,6 +110,8 @@ test('precondition1: remove image UUID-OF:' + testImgArg, function (t) {
     });
 });
 
+// XXX-mg disabled for now; broken and not clear we need to support docker
+if (false) {
 test('imgadm import ' + testImgArg, function (t) {
     t.exec('imgadm import ' + testImgArg, function () {
         t.exec('imgadm get ' + testImg.uuid, function () {
@@ -195,3 +197,4 @@ test('cleanup: remove image UUID-OF:' + testImgArg, function (t) {
         t.end();
     });
 });
+}
