@@ -36,13 +36,15 @@ You will need node 6 available at /usr/node/bin/node.  One way to make this
 happen is:
 
 ```
-$ curl https://nodejs.org/dist/v6.17.1/node-v6.17.1-linux-x64.tar.gz | sudo tar xzf - -C /opt
+$ curl https://nodejs.org/dist/v6.17.1/node-v6.17.1-linux-x64.tar.gz | \
+    sudo tar xzf - -C /opt
 $ sudo ln -s /opt/node-v6.17.1-linux-x64 /usr/node
 ```
 
 To build:
 
 ```
+$ sudo apt install -y git python-dev npm
 $ make install
 ```
 
