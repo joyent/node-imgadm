@@ -34,6 +34,11 @@ JSSTYLE_OPTS	= -o indent=4,strict-indent=1,doxygen,unparenthesized-return=0,cont
 
 SUBDIRS		= tools/javascriptlint
 
+INSTALL		= install
+DESTDIR		=
+PREFIX		= /usr/img
+SHELL		= bash
+
 export PATH := /usr/node/bin:$(PATH)
 
 all	: TARGET = all
@@ -53,9 +58,38 @@ all: $(SUBDIRS)
 $(SUBDIRS):
 	cd $@ && $(MAKE) TOP=$(TOP) $(TARGET)
 
-.PHONY: install
-install: $(SUBDIRS)
+# This makes imgadm runnable from ./sbin
+.PHONY: all
+all: $(SUBDIRS)
 	npm install
+
+# This picks the bits needed from . and places that at $(DESTDIR)/$(PREFIX).
+.PHONY: install
+install:
+	me=`whoami`; \
+	cat manifest.in | \
+	    sed -e '/^#/ d' -e '/^$$/ d' -e 's,@PREFIX@,$(PREFIX),g' | \
+	    while read type path mode user group; do \
+		if [[ $$me == root ]]; then \
+			args="-o $$user -g $$group"; \
+		else \
+			args=; \
+		fi; \
+		case $$type in \
+		d)	echo $(INSTALL) $$args -p -d "$(DESTDIR)$$path" ;; \
+		f)	echo $(INSTALL) $$args -p -T "$${path#$(PREFIX)/}" \
+			    "$(DESTDIR)$$path" ;; \
+		s)	link="$${path%%=*}"; \
+			path="$${path#*=}"; \
+			echo mkdir -p `dirname $(DESTDIR)$$link`; \
+			echo ln -sf $$path $(DESTDIR)$$link \
+			;; \
+		*)	echo "Invalid line:" \
+			    '$$type $$path $$mode $$user $$group' 1>&2; \
+			exit 1; \
+			;; \
+		esac; \
+	    done | bash -ve
 
 .PHONY: clean
 clean: $(SUBDIRS)

@@ -1,0 +1,44 @@
+#! /bin/bash
+
+#
+# This file and its contents are supplied under the terms of the
+# Common Development and Distribution License ("CDDL"), version 1.0.
+# You may only use this file in accordance with the terms of version
+# 1.0 of the CDDL.
+#
+# A full copy of the text of the CDDL should have accompanied this
+# source.  A copy of the CDDL is also available via the Internet at
+# http://www.illumos.org/license/CDDL.
+#
+
+# Copyright 2019 Joyent, Inc.
+
+find etc lib node_modules package.json README.md sbin test |
+    while read file; do
+	case $file in
+	Makefile*) continue ;;
+	*.[chos]) continue ;;
+	*.cc) continue ;;
+	*.mk) continue ;;
+	*/.bin/*) continue ;;
+	*/.npmignore) continue ;;
+	*/.snyk) continue ;;
+	esac
+	if [[ -h $file ]]; then
+		echo "s $(readlink $file)=$file"
+	elif [[ -f $file ]]; then
+		if [[ -x $file ]]; then
+			mode=0555
+		else
+			mode=0444
+		fi
+		echo "f $file $mode root bin"
+	elif [[ -d $file ]]; then
+		echo "d $file 0555 root bin"
+	else
+		echo "$0: $file: unknown type" 1>&2
+		exit 1
+	fi
+    done
+
+exit 0
