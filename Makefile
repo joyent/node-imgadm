@@ -44,6 +44,9 @@ JSSTYLE_FILES =		$(JS_FILES)
 JSL_CONF_NODE =		deps/eng/tools/jsl.node.conf
 JSSTYLE_FLAGS =		-f tools/jsstyle.conf
 
+INSTALL	=		install
+PREFIX =		/usr/img
+
 #
 # Historically, Node packages that make use of binary add-ons must ship their
 # own Node built with the same compiler, compiler options, and Node version that
@@ -132,6 +135,33 @@ all: $(SMF_MANIFESTS) $(STAMP_NODE_MODULES) $(GO_TARGETS) | $(REPO_DEPS)
 #
 .PHONY: manpages
 manpages: $(MAN_OUTPUTS)
+
+.PHONY: install
+install:
+	me=`whoami`; \
+	cat manifest.in | \
+	    sed -e '/^#/ d' -e '/^$$/ d' -e 's,@PREFIX@,$(PREFIX),g' | \
+	    while read type path mode user group; do \
+	        if [[ $$me == root ]]; then \
+	                args="-o $$user -g $$group"; \
+	        else \
+	                args=; \
+	        fi; \
+	        case $$type in \
+	        d)      echo $(INSTALL) $$args -p -d "$(DESTDIR)$$path" ;; \
+	        f)      echo $(INSTALL) $$args -p -T "$${path#$(PREFIX)/}" \
+	                    "$(DESTDIR)$$path" ;; \
+	        s)      link="$${path%%=*}"; \
+	                path="$${path#*=}"; \
+	                echo mkdir -p `dirname $(DESTDIR)$$link`; \
+	                echo ln -sf $$path $(DESTDIR)$$link \
+	                ;; \
+	        *)      echo "Invalid line:" \
+	                    '$$type $$path $$mode $$user $$group' 1>&2; \
+	                exit 1; \
+	                ;; \
+	        esac; \
+	    done | bash -ve
 
 .PHONY: test
 test: $(STAMP_NODE_MODULES) $(GO_TEST_TARGETS) $(TEST_CTF_TARGETS)
