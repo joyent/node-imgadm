@@ -1,5 +1,6 @@
 /*
  * Copyright 2012 Mark Cavage.  All rights reserved.
+ * Copyright 2019 Joyent, Inc.
  *
  * Help nodeunit API feel like node-tap's.
  *
@@ -60,7 +61,7 @@ module.exports = {
 
             // ---- Custom (to the img test suite) helpers.
 
-            /**
+            /*
              * Exec a command and assert it exitted zero.
              *
              * @param cmd {String} The command to run.
@@ -73,9 +74,9 @@ module.exports = {
                     cb = opts;
                     opts = undefined;
                 }
-                var exec = require('child_process').exec;
+                var exec2 = require('child_process').exec;
                 verbose('cmd:', cmd);
-                exec(cmd, function (err, stdout, stderr) {
+                exec2(cmd, function (err, stdout, stderr) {
                     verbose('err:', err);
                     verbose('stdout: %j', stdout);
                     verbose('stderr: %j', stderr);

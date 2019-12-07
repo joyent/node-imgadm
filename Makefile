@@ -34,14 +34,14 @@ TOP ?= $(error Unable to access eng.git submodule Makefiles.)
 # Configuration used by Makefile.defs and Makefile.targ to generate
 # "check" and "docs" targets.
 #
-BASH_FILES =		tools/check-copyright
+BASH_FILES =
 DOC_FILES =		index.md boilerplateapi.md
 JSON_FILES =		package.json
 JS_FILES :=		$(shell find lib test -name '*.js')
 JSL_FILES_NODE =	$(JS_FILES)
 JSSTYLE_FILES =		$(JS_FILES)
 
-JSL_CONF_NODE =		tools/jsl.node.conf
+JSL_CONF_NODE =		deps/eng/tools/jsl.node.conf
 JSSTYLE_FLAGS =		-f tools/jsstyle.conf
 
 #

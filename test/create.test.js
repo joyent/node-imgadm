@@ -20,7 +20,7 @@
  *
  * CDDL HEADER END
  *
- * Copyright (c) 2013, Joyent, Inc. All rights reserved.
+ * Copyright 2019 Joyent, Inc.
  *
  * * *
  *
@@ -45,7 +45,7 @@ var before = tap4nodeunit.before;
 var test = tap4nodeunit.test;
 
 
-var WRKDIR = '/var/tmp/img-test-create'
+var WRKDIR = '/var/tmp/img-test-create';
 var TESTDIR = __dirname;
 
 // Base image from which we'll be creating a custom images.
@@ -65,7 +65,7 @@ function objCopy(obj, target) {
     Object.keys(obj).forEach(function (k) {
         target[k] = obj[k];
     });
-    return target;
+    return (target);
 }
 
 
@@ -84,8 +84,9 @@ test('setup: clean WRKDIR (' + WRKDIR + ')', function (t) {
 
 // ---- tests
 
+/* BEGIN JSSTYLED */
 // XXX-mg skip until vmadm works
-if (false) {
+/*
 test('custom image (compression=none)', function (t) {
     var cmd = format('%s/mk-custom-image %s %s/1 none >%s/mk-custom-image.1.log 2>&1',
         TESTDIR, BASE_UUID, WRKDIR, WRKDIR);
@@ -218,5 +219,5 @@ test('custom image (incremental, compression=xz)', function (t) {
         });
     });
 });
-
-}
+*/
+/* END JSSTYLED */

@@ -20,7 +20,7 @@
  *
  * CDDL HEADER END
  *
- * Copyright (c) 2015, Joyent, Inc. All rights reserved.
+ * Copyright 2019 Joyent, Inc.
  */
 
 /*
@@ -55,13 +55,8 @@ test('setup: get existing UUID', function (t) {
     });
 });
 
-test('require("/usr/img/lib/IMG")', function (t) {
-    IMG = require('/usr/img/lib/IMG');
-    t.end();
-});
-
-test('IMG.*', function (t) {
-    IMG.quickGetImage;
+test('require("../lib/IMG")', function (t) {
+    IMG = require('../lib/IMG');
     t.end();
 });
 
@@ -84,4 +79,3 @@ test('IMG.quickGetImage err', function (t) {
         t.end();
     });
 });
-

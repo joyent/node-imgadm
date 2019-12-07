@@ -20,7 +20,7 @@
  *
  * CDDL HEADER END
  *
- * Copyright (c) 2014, Joyent, Inc. All rights reserved.
+ * Copyright 2019 Joyent, Inc.
  *
  * * *
  * Test 'imgadm update'.
@@ -47,7 +47,7 @@ function objCopy(obj, target) {
     Object.keys(obj).forEach(function (k) {
         target[k] = obj[k];
     });
-    return target;
+    return (target);
 }
 
 

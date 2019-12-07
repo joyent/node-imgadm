@@ -20,7 +20,7 @@
  *
  * CDDL HEADER END
  *
- * Copyright (c) 2018, Joyent, Inc. All rights reserved.
+ * Copyright 2019 Joyent, Inc.
  *
  * * *
  *
@@ -70,7 +70,7 @@ test('setup: clean WRKDIR (' + WRKDIR + ')', function (t) {
     });
 });
 
-/**
+/*
  * Also note if we *had* a docker hub source already to know to not remove
  * it at the end.
  */
@@ -110,8 +110,8 @@ test('precondition1: remove image UUID-OF:' + testImgArg, function (t) {
     });
 });
 
-// XXX-mg disabled for now; broken and not clear we need to support docker
-if (false) {
+/* BEGIN JSSTYLED */
+/* XXX-mg disabled for now; broken and not clear we need to support docker
 test('imgadm import ' + testImgArg, function (t) {
     t.exec('imgadm import ' + testImgArg, function () {
         t.exec('imgadm get ' + testImg.uuid, function () {
@@ -197,4 +197,5 @@ test('cleanup: remove image UUID-OF:' + testImgArg, function (t) {
         t.end();
     });
 });
-}
+*/
+/* END JSSTYLED */
