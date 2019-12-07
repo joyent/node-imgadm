@@ -1,3 +1,4 @@
 build
+make_stamps
 node_modules
 *.swp
