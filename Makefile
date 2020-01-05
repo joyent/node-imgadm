@@ -10,6 +10,8 @@
 
 NAME = imgadm
 
+SHELL = /bin/bash
+
 #
 # Tools
 #
@@ -45,7 +47,7 @@ JSL_CONF_NODE =		deps/eng/tools/jsl.node.conf
 JSSTYLE_FLAGS =		-f tools/jsstyle.conf
 
 INSTALL	=		install
-PREFIX =		/usr/img
+PREFIX =		/opt/img
 
 #
 # Historically, Node packages that make use of binary add-ons must ship their
