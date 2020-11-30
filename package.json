@@ -1,7 +1,7 @@
 {
   "name": "imgadm",
-  "description": "Manage SmartOS virtual machine images.",
-  "version": "3.9.2",
+  "description": "Manage virtual machine images.",
+  "version": "3.10.0",
   "author": "Joyent (joyent.com)",
   "private": true,
   "dependencies": {
@@ -23,7 +23,7 @@
     "qlocker": "1.0.1",
     "restify": "8.5.0",
     "rimraf": "2.2.8",
-    "sdc-clients": "git://github.com/joyent/node-sdc-clients.git#97ab67eaecfe9a66c7cda1e6c29b1276ed1d156b",
+    "sdc-clients": "git://github.com/joyent/node-sdc-clients.git#linuxcn",
     "tabula": "1.4.1",
     "vasync": "1.6.2",
     "verror": "1.6.0"
